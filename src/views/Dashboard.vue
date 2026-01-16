@@ -16,9 +16,11 @@
             type="text" 
             placeholder="输入关键词，支持段落级语义检索，描述越详细，检索越精准" 
             class="custom-input"
+            v-model="searchQuery"
+            @keyup.enter="handleSearch"
           />
           
-          <div class="action-group">
+          <div class="action-group" @click="handleSearch">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill send-icon" viewBox="0 0 16 16">
  <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
 </svg>
@@ -124,15 +126,31 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router' // 引入路由
 // 补充了卡片所需的图标
 import { Promotion, Operation, School, Cpu, Document, CirclePlus ,Grid ,Right} from '@element-plus/icons-vue'
 
+const router = useRouter()
+const searchQuery = ref('') // 绑定输入框内容
 const isGlobalSearch = ref(true)
+
+// 执行搜索跳转
+const handleSearch = () => {
+  if (!searchQuery.value.trim()) return
+  
+  router.push({
+    path: '/search', // 假设你的路由路径是 /search
+    query: { 
+      keyword: searchQuery.value,
+      global: isGlobalSearch.value 
+    }
+  })
+}
 
 // 处理热搜点击
 const handleHotSearch = (text) => {
-  console.log('点击了热搜:', text)
-  // 这里可以执行 push 路由或更新搜索框内容的操作
+  searchQuery.value = text
+  handleSearch()
 }
 
 // 情报数据
